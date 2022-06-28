@@ -1,4 +1,0 @@
-var main = {
-};
-
-main.init();

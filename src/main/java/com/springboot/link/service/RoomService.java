@@ -5,7 +5,7 @@ import com.springboot.link.domain.room.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
-
+import org.springframework.data.repository.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +27,16 @@ public class RoomService {
     }
 
     public void addRoom(Room room){
+        Long id = 1L;
+        if(!roomRepository.findMaxId().isEmpty()){
+            id = roomRepository.findMaxId().get(0).getId() + 1;
+        }
+        room.setId(id);
+        roomRepository.save(room);
         if(!roomMap.containsKey(room.getId())){
             roomMap.put(room.getId(), room);
         }
-        if(roomRepository.findById(room.getId()).isEmpty()){
-            roomRepository.save(room);
-        }
+
     }
     public void deleteRoom(Room room){
         if(roomMap.containsKey(room.getId())){

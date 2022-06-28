@@ -1,16 +1,21 @@
 package com.springboot.link.web;
 
+import com.springboot.link.config.auth.LoginUser;
+import com.springboot.link.config.auth.dto.SessionUser;
 import com.springboot.link.domain.room.Room;
 import com.springboot.link.domain.room.RoomRepository;
 import com.springboot.link.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @RequiredArgsConstructor
-@RestController("/chat")
+@Controller
 public class ChatController {
 
 
@@ -19,47 +24,49 @@ public class ChatController {
     private final RoomService roomService;
 
 
+    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
 
-
-    @GetMapping(value = { "/roomsGrid" })
-    public String roomsGrid() {
-        return "roomsGrid";
-
+    @GetMapping("/link/echo")
+    public String chat(){
+        return "link/echo";
     }
 
-    @GetMapping(value = { "/roomCreateForm" })
-    public String roomCreateForm() {
+    @GetMapping("/form/room/create")
+    public String roomCreateForm(Model model, @LoginUser SessionUser user) {
+        if (user != null) {
+            model.addAttribute("userEmail", user.getEmail());
+        }
         return "roomCreateForm";
     }
-
-    @GetMapping("/rooms")
+    @PostMapping("/api/room/selectAll")
+    @ResponseBody
     public ArrayList<Room> rooms() {
         try {
             return new ArrayList<Room>(roomRepository.findAll());
         } catch (Exception e) {
             e.printStackTrace();
-
-        }finally {
             return null;
         }
     }
 
-    @GetMapping("/rooms/{id}")
-    public Room room(@PathVariable Long id) {
-
-        return roomRepository.findById(id).get();
+    @GetMapping("/api/room/select/{id}")
+    @ResponseBody
+    public Room room(@PathVariable String id) {
+        log.info(id);
+        Long parsedId = Long.parseLong(id);
+        return roomRepository.findById(parsedId).get();
 
     }
 
-    @PostMapping("/room")
+    @GetMapping("/room/enter")
     public String enterRoom(@RequestParam String id, Model model) {
         model.addAttribute("id", id);
         return "room";
     }
 
 
-    @PostMapping("/room/delete")
+    @PostMapping("/api/room/delete")
     public void delete(@RequestBody Room room) {
         Long id = room.getId();
 
@@ -68,44 +75,42 @@ public class ChatController {
         } catch (Exception e) {
 
             e.printStackTrace();
-        }finally{
             return;
         }
 
     }
 
+
+    @PostMapping("/api/room/create")
     @ResponseBody
-    @RequestMapping("/room/create")
-    public void create(@RequestBody Room room) {
+    public String create(@RequestBody Room room) {
 
         try {
+
             roomService.addRoom(room);
+            return "success";
         } catch (Exception e) {
             e.printStackTrace();
-
-        }finally {
-            return;
+            return e.getMessage();
         }
 
     }
 
     @ResponseBody
-    @RequestMapping("/room/update")
+    @RequestMapping("/api/room/update")
     public void update(@RequestBody Room room) throws Exception {
         try{
             roomService.updateRoom(room);
 
         } catch (Exception e) {
             e.printStackTrace();
-
-        }finally {
-            return;
+    return;
         }
 
 
     }
 
-    @RequestMapping("/roomModifyForm")
+    @RequestMapping("form/room/modify")
     public String roomModifyForm(@RequestParam String id, Model model) {
         model.addAttribute("id", id);
         return "roomModifyForm";

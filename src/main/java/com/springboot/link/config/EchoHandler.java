@@ -1,4 +1,4 @@
-package com.springboot.link.web;
+package com.springboot.link.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.link.domain.room.Room;
@@ -6,22 +6,27 @@ import com.springboot.link.domain.room.RoomRepository;
 import com.springboot.link.service.RoomService;
 import com.springboot.link.web.dto.ChatMessageDto;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.Set;
-
 @RequiredArgsConstructor
+@Service
 public class EchoHandler extends TextWebSocketHandler {
 
     private final RoomService roomService;
     private final RoomRepository roomRepository;
-
+    private static Logger log = LoggerFactory.getLogger(EchoHandler.class);
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String query = session.getUri().getQuery();
+        log.info(query);
+
         Long roomId = Long.parseLong(query);
         Room room = roomRepository.findById(roomId).get();
 
@@ -54,4 +59,5 @@ public class EchoHandler extends TextWebSocketHandler {
         roomService.removeSession(session);
 
     }
+
 }

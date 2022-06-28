@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 public class Room extends BaseTimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String pw;
@@ -33,6 +32,7 @@ public class Room extends BaseTimeEntity {
     @Column(nullable = false)
     private int memberCnt;
     @JsonIgnore
+    @Transient
     private Set<WebSocketSession> sessions;
 
 
