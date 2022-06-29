@@ -11,7 +11,7 @@ import lombok.Setter;
 public class ChatMessageDto {
     public static final int JOIN = 1;
 
-    private String roomId;
+    private Long roomId;
 
     private String writer;
 
@@ -20,7 +20,7 @@ public class ChatMessageDto {
 
 
     @Builder
-    public ChatMessageDto(String roomId, String writer, String message, int type) {
+    public ChatMessageDto(Long roomId, String writer, String message, int type) {
 
         this.roomId = roomId;
         this.writer = writer;

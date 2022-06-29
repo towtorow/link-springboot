@@ -39,7 +39,8 @@ dependencies {
 
     compile('org.springframework.boot:spring-boot-starter-websocket')
     compile('org.eclipse.jetty.websocket:websocket-api:9.4.46.v20220331')
-    compile('org.eclipse.jetty.websocket:websocket-server:9.4.39.v20210325')
+    compile('org.eclipse.jetty.websocket:websocket-server:9.4.46.v20220331')
+    compile ('org.webjars:stomp-websocket:2.3.4')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile("org.springframework.security:spring-security-test")
 

@@ -44,7 +44,7 @@ public class EchoHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         ChatMessageDto chatMessage = mapper.readValue(message.getPayload().toString(), ChatMessageDto.class);
-        Room room = roomService.getRoomsForSessions(Long.parseLong(chatMessage.getRoomId()));
+        Room room = roomService.getRoomsForSessions(chatMessage.getRoomId());
         room.handleMessage(session, chatMessage);
     }
 
