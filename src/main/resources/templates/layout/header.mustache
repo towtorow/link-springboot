@@ -1,9 +1,20 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>스프링부트 웹서비스</title>
+    <title>스프링부트 채팅</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="/js/app/jquery.js"></script>
     <link rel="stylesheet" href="/css/app/bootstrap.css">
 </head>
 <body>
+<div class="container-fluid" style="padding: 100px 100px;">
+    <div style="padding: 20px 0px;text-align: right;">
+        {{#userEmail}}
+
+            <a href="/logout" style="background-color:white;color:black;" class="btn btn-success" role="button">로그아웃</a>
+
+
+        {{/userEmail}}
+        {{^userEmail}}
+            <a href="/oauth2/authorization/google"  style="background-color:white;color:black;" class="btn btn-success" role="button">구글 로그인</a>
+        {{/userEmail}}

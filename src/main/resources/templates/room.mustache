@@ -1,9 +1,9 @@
 {{>layout/header}}
-	<div class="container">
-	<div id="name"></div>
+
+	<div id="name" style="text-align:center;"></div>
 		<div class="form-group">
 			<textarea class="form-control" id="data"
-				rows="15"></textarea>
+				rows="15" disabled></textarea>
 
 		</div>
 		<div class="input-group mb-3">
@@ -16,7 +16,7 @@
 		</div>
 		<button type="button" class="btn btn-primary" onclick="roomModifyForm()">방 수정</button>
 		<button type="button" class="btn btn-primary"onclick="deleteRoom()">방 삭제</button>
-	</div>
+
 	<script type="text/javascript">
 	var id = {{id}};
 	var email = "{{userEmail}}";
@@ -61,26 +61,7 @@
             }
 
 
-            /*
-	        var sock = new SockJS('/link/echo?'+ id);
-	        
-	        sock.onopen = function () {
-	            sock.send(JSON.stringify({roomId: id, type: 1, writer: sessionStorage.getItem("id")}));
-	            sock.onmessage = onMessage
-	        }
-	        
-	        sock.onclose = onClose;
-	        
 
-
-	        function onMessage(msg) {
-	        	var content = JSON.parse(msg.data);
-	        	$("#data").append('(' + content.writer +') '+content.message+'\n');
-	        }
-	        function onClose(evt) {
-	           $("#data").append("연결 끊김");
-	        }
-			*/
 		});
 
 		function roomModifyForm(){
