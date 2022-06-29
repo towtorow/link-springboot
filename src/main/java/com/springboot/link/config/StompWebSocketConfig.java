@@ -74,7 +74,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
                         super.handleMessage(session, message);
                         log.info(session.getId() + "|"+message.getPayload());
-                        if(message.getPayload().toString().contains("SUBSCRIBE")){
+                        if(message.getPayload().toString().startsWith("SUBSCRIBE")){
                             String roomIdStr = message.getPayload().toString().split("/sub/chat/room/")[1];
                             String roomIdStrExtracted = roomIdStr.replaceAll("[^0-9]","").trim();
                             Long roomId = Long.parseLong(roomIdStrExtracted);
