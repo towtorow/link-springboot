@@ -6,50 +6,45 @@
 				<span class="input-group-text" id="basic-addon1">이름</span>
 			</div>
 			<input type="text" class="form-control" placeholder="RoomName"
-				aria-label="Username" aria-describedby="basic-addon1" id="name">
+				aria-label="Username" aria-describedby="basic-addon1" id="name" value="{{name}}">
 		</div>
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1">비밀번호</span>
 			</div>
 			<input type="text" class="form-control" placeholder="Password"
-				aria-label="Username" aria-describedby="basic-addon1" id="pw">
+				aria-label="Username" aria-describedby="basic-addon1" id="pw" value="{{pw}}">
 		</div>
-		<div class="input-group mb-3">
-			<div class="input-group-prepend">
-				<span class="input-group-text" id="basic-addon1">인원수</span>
-			</div>
-			<input type="text" class="form-control" placeholder="UserCapacity"
-				aria-label="Username" aria-describedby="basic-addon1" id="capacity">
-		</div>
+
 		<button type="button" class="btn btn-primary" onclick="modifyRoom()">방수정</button>
 		<button type="button" class="btn btn-primary" onclick="cancel()">취소</button>
 
 	<script type="text/javascript">
 		function modifyRoom() {
+		    var id = "{{id}}";
+            var user = "{{user}}";
 			$.ajax({
-				url : 'api/room/update',
+				url : '/api/room/update',
 				method : 'POST',
 				data : JSON.stringify({
-					id : ${id},
+					id : id,
 					name : $('#name').val(),
 					pw : $('#pw').val(),
-					capacity : $('#capacity').val(),
-					host : sessionStorage.getItem("id")
+					host : user
 				}),
-				dataType : 'json',
 				contentType: "application/json; charset=UTF-8",
 				success:(data)=>{
-					alert("success : "+JSON.stringify(data));
-					location.href = "room?id="+${id};
+					alert(data);
+					location.href = "/room/enter?id="+id;
 				},
 				error:(err)=>{
 					alert("fail : "+ JSON.stringify(err));
 				}
 			});
 		}
-		
+
 		function cancel() {
+
 			location.href = "/";
 		}
 

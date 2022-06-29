@@ -75,7 +75,7 @@ public class ChatController {
         Long roomId = Long.parseLong(id);
         Room room = roomRepository.findById(roomId).get();
 
-        if (room.getMemberCnt() + 1 < room.getCapacity()) {
+        if (room.getMemberCnt() + 1 <= room.getCapacity()) {
             room.setMemberCnt(room.getMemberCnt() + 1);
             roomService.updateRoom(room);
             return "room";
@@ -97,7 +97,9 @@ public class ChatController {
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
     }
     @GetMapping("/room/exit")
-    public String exitRoom(@RequestParam String id, Model model) {
+    public String exitRoom(@RequestParam String id, Model model, @LoginUser SessionUser user) {
+        ChatMessageDto message = ChatMessageDto.builder().message(user.getEmail() + "님이 채팅방에서 퇴장하였습니다.").writer("System").build();
+        template.convertAndSend("/sub/chat/room/" + id, message);
         Long roomId = Long.parseLong(id);
         Room room = roomRepository.findById(roomId).get();
         room.setMemberCnt(room.getMemberCnt() - 1);
@@ -106,16 +108,21 @@ public class ChatController {
     }
 
     @PostMapping("/api/room/delete")
-    public void delete(@RequestBody Room room) {
-        Long id = room.getId();
-
+    @ResponseBody
+    public String delete(@RequestBody  String roomId) {
 
         try {
-            roomService.deleteRoom(room);
+            Long longId = Long.parseLong(roomId);
+            Room room = roomRepository.findById(longId).get();
+            if(room.getCapacity() != 1){
+                return "existMemeber";
+            }
+            roomService.deleteRoom(longId);
+            return "Success";
         } catch (Exception e) {
 
             e.printStackTrace();
-            return;
+            return e.getMessage();
         }
 
     }
@@ -138,21 +145,33 @@ public class ChatController {
 
     @ResponseBody
     @RequestMapping("/api/room/update")
-    public void update(@RequestBody Room room) throws Exception {
+    public String update(@RequestBody Room room, @LoginUser SessionUser user) throws Exception {
         try{
+            Room roomById = roomRepository.findById(room.getId()).get();
+            if(!(roomById != null && roomById.getHost()!=null && roomById.getHost().equals(user.getEmail()))){
+                log.info(roomById.getHost()+"|"+user.getEmail());
+                return "HostMisMatch";
+            }
             roomService.updateRoom(room);
+            return "Success";
 
         } catch (Exception e) {
             e.printStackTrace();
-    return;
+            return e.getMessage();
         }
 
 
     }
 
     @GetMapping("/form/room/modify")
-    public String roomModifyForm(@RequestParam String id, Model model) {
+    public String roomModifyForm(@RequestParam String id, Model model, @LoginUser SessionUser user) {
+        Room room = roomRepository.findById(Long.parseLong(id)).get();
+
+        model.addAttribute("user", user.getEmail());
         model.addAttribute("id", id);
+        model.addAttribute("pw", room.getPw());
+        model.addAttribute("name", room.getName());
+        model.addAttribute("capacity", room.getCapacity());
         return "roomModifyForm";
     }
 

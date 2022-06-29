@@ -17,12 +17,15 @@ public class RoomService {
 
     private RoomRepository roomRepository;
     private Map<Long, Room> roomMap;
-
+    private Map<String, Long> sessionIdRoomIdMap;
     @Autowired
     public RoomService(RoomRepository roomRepository){
         this.roomRepository = roomRepository;
         if(roomMap == null){
             roomMap = new HashMap<Long, Room>();
+        }
+        if(sessionIdRoomIdMap == null){
+            sessionIdRoomIdMap = new HashMap<String, Long>();
         }
     }
 
@@ -38,13 +41,14 @@ public class RoomService {
         }
 
     }
-    public void deleteRoom(Room room){
-        if(roomMap.containsKey(room.getId())){
-            roomMap.remove(room.getId());
+    public String deleteRoom(Long id){
+        if(roomMap.containsKey(id)){
+            roomMap.remove(id);
         }
-        if(!roomRepository.findById(room.getId()).isEmpty()){
-            roomRepository.deleteById(room.getId());
+        if(!roomRepository.findById(id).isEmpty()){
+            roomRepository.deleteById(id);
         }
+        return "Success";
     }
     public void updateRoom(Room room){
         if(roomMap.containsKey(room.getId())){
@@ -63,8 +67,12 @@ public class RoomService {
             room.removeSession(session);
         }
     }
-    public void addSession(Long id, WebSocketSession session) {
-        roomMap.get(id).addSession(session);
+    public void addSession(Long id, String sessionId) {
+
+        sessionIdRoomIdMap.put(sessionId, id);
+    }
+    public Long getRoomId(WebSocketSession session) {
+        return sessionIdRoomIdMap.get(session.getId());
     }
     public Room getRoomsForSessions(Long id) {
         return roomMap.get(id);

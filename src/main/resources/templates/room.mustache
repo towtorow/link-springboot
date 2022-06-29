@@ -14,10 +14,13 @@
 					id="sendBtn">입력</button>
 			</div>
 		</div>
+
 		<button type="button" class="btn btn-primary" onclick="roomModifyForm()">방 수정</button>
 		<button type="button" class="btn btn-primary"onclick="deleteRoom()">방 삭제</button>
+		<button type="button" class="btn btn-primary"onclick="exitRoom()">방 나가기</button>
 
 	<script type="text/javascript">
+
 	var id = {{id}};
 	var email = "{{userEmail}}";
 		$(function (){
@@ -70,21 +73,21 @@
 		
 		function deleteRoom(){
 			$.ajax({
-				url : 'api/room/delete',
+				url : '/api/room/delete',
 				method : 'POST',
-				data : JSON.stringify({
-					id : id,
-				}),
-				dataType : 'json',
+				data : id+"",
 				contentType: "application/json; charset=UTF-8",
 				success:(data)=>{
-					alert("success : "+JSON.stringify(data));
+					alert(data);
 					location.href = "/";
 				},
 				error:(err)=>{
 					alert("fail : "+ JSON.stringify(err));
 				}
 			});
+		}
+		function exitRoom (){
+		    location.href = "/room/exit?id=" + id;
 		}
 	</script>
 {{>layout/footer}}
