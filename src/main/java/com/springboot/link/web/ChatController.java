@@ -114,7 +114,7 @@ public class ChatController {
         try {
             Long longId = Long.parseLong(roomId);
             Room room = roomRepository.findById(longId).get();
-            if(room.getCapacity() != 1){
+            if(room.getMemberCnt() != 1){
                 return "existMemeber";
             }
             roomService.deleteRoom(longId);
