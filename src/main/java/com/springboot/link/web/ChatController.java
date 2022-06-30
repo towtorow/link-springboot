@@ -109,13 +109,16 @@ public class ChatController {
 
     @PostMapping("/api/room/delete")
     @ResponseBody
-    public String delete(@RequestBody  String roomId) {
+    public String delete(@RequestBody  String roomId, @LoginUser SessionUser user) {
 
         try {
             Long longId = Long.parseLong(roomId);
             Room room = roomRepository.findById(longId).get();
             if(room.getMemberCnt() != 1){
                 return "existMemeber";
+            }
+            if(!(user != null && user.getEmail()!= null && user.getEmail().equals(room.getHost()))){
+                return "noHost";
             }
             roomService.deleteRoom(longId);
             return "Success";
