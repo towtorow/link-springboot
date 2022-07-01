@@ -55,6 +55,7 @@
                 stomp.subscribe("/sub/chat/room/" + id, function (chat) {
                     var content = JSON.parse(chat.body);
                     $("#data").append('(' + content.writer +') '+content.message+'\n');
+                    document.getElementById("data").scrollTop = document.getElementById("data").scrollHeight;
                 });
                 stomp.send('/pub/chat/enter', JSON.stringify({roomId: id, writer: email}), {});
 

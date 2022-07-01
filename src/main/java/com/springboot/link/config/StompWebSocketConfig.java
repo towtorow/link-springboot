@@ -37,7 +37,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/stomp/chat")
-                .setAllowedOrigins("http://localhost:8080")
+                .setAllowedOrigins("*")
+                //.setAllowedOrigins("https://link-springboot-app-link-springboot-app-production.azuremicroservices.io")
+                //.setAllowedOrigins("http://localhost:8080")
                 .withSockJS();
     }
 
